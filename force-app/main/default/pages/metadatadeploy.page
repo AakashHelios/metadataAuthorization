@@ -1,0 +1,22 @@
+<apex:page controller="MetadataDeployController" sidebar="false">
+	<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+	<apex:form id="form">
+	    <apex:sectionHeader title="Metadata Deploy"/>
+		<apex:pageMessages />
+		<apex:actionPoller action="{!checkAsyncRequest}" interval="5" rerender="form" rendered="{!NOT(ISNULL(AsyncResult))}"/>
+		<apex:actionFunction name="deployZip" action="{!deployZip}" rendered="{!ISNULL(AsyncResult)}" rerender="form">
+			<apex:param name="data" assignTo="{!ZipData}" value=""/>
+		</apex:actionFunction>
+		<c:zip name="generateZip" oncomplete="deployZip(data);" rendered="{!ISNULL(AsyncResult)}">
+			<c:zipEntry path="package.xml" data="{!PackageXml}"/>
+			<c:zipEntry path="classes/HelloWorld.cls-meta.xml" data="{!HelloWorldMetadata}"/>
+			<c:zipEntry path="classes/HelloWorld.cls" data="{!HelloWorld}"/>
+		</c:zip>
+		<apex:outputPanel rendered="{!ISNULL(AsyncResult)}">
+			<input type="button" onclick="generateZip();" value="Deploy"/>
+		</apex:outputPanel>
+ 	</apex:form>
+</apex:page>

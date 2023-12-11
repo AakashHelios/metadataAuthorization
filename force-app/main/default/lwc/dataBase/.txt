@@ -1,0 +1,179 @@
+
+
+
+To achieve this, let's create the necessary components:
+
+Create the AuthMetadataApi component (AuthMetadataApi.html):
+html
+Copy code
+<template>
+    <lightning-card>
+        <template if:true={showSourceTarget}>
+            <!-- Show Source and Target Picklists -->
+            <!-- Your existing code for source and target picklists here -->
+            <lightning-button label="Next" variant="brand" onclick={handleNext}></lightning-button>
+        </template>
+        <template if:true={showMetadataTypes}>
+            <!-- Show the Lightning Dual Listbox with Metadata Types -->
+            <lightning-dual-listbox
+                label="Select Metadata Types"
+                source-label="Available Types"
+                selected-label="Selected Types"
+                options={metadataTypes}
+                value={selectedMetadataTypes}
+                onchange={handleMetadataTypesChange}
+            ></lightning-dual-listbox>
+            <lightning-button label="Previous" variant="brand" onclick={handlePrevious}></lightning-button>
+            <lightning-button label="Next" variant="brand" onclick={handleNext}></lightning-button>
+        </template>
+        <template if:true={showDataTable}>
+            <!-- Show the Datatable with Metadata Details -->
+            <!-- Implement the datatable here to display details based on the selected metadata type -->
+            <!-- You can use another LWC for the datatable component -->
+            <c:MetadataDataTable selectedTypes={selectedMetadataTypes}></c:MetadataDataTable>
+            <lightning-button label="Previous" variant="brand" onclick={handlePrevious}></lightning-button>
+        </template>
+    </lightning-card>
+</template>
+AuthMetadataApi.js:
+
+javascript
+Copy code
+import { LightningElement, wire } from "lwc";
+import getAuthorizedRecords from "@salesforce/apex/AuthorizedPicklistValuesController.getAuthorizedRecords";
+import getMetadataTypes from "@salesforce/apex/Metadatatypes.getMetadataTypeNames";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+
+export default class AuthMetadataApi extends LightningElement {
+    // Your existing code for source and target picklists
+    // ...
+
+    showSourceTarget = true;
+    showMetadataTypes = false;
+    showDataTable = false;
+
+    metadataTypes = [];
+    selectedMetadataTypes = [];
+
+    handleNext() {
+        this.showSourceTarget = false;
+        this.showMetadataTypes = true;
+        this.showDataTable = false;
+    }
+
+    handlePrevious() {
+        this.showSourceTarget = true;
+        this.showMetadataTypes = false;
+        this.showDataTable = false;
+    }
+
+    handleMetadataTypesChange(event) {
+        this.selectedMetadataTypes = event.detail.value;
+    }
+
+    showToastMessage(title, message, variant) {
+        // Your existing code for showToastMessage
+        // ...
+    }
+
+    // This method will be called when the component is connected to the DOM
+    connectedCallback() {
+        this.loadMetadataTypes();
+    }
+
+    loadMetadataTypes() {
+        getMetadataTypes()
+            .then((result) => {
+                if (result) {
+                    this.metadataTypes = result.map((typeName) => {
+                        return { label: typeName, value: typeName };
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error loading metadata types:", error);
+                this.showToastMessage("Error", "Failed to load metadata types.", "error");
+            });
+    }
+}
+Create the MetadataDataTable component for displaying metadata details (MetadataDataTable.html):
+html
+Copy code
+<template>
+    <!-- Implement the datatable here to display details based on the selected metadata type -->
+    <!-- Example: -->
+    <lightning-datatable
+        key-field="Id"
+        data={metadataDetails}
+        columns={columns}
+        hide-checkbox-column
+    ></lightning-datatable>
+</template>
+MetadataDataTable.js:
+
+javascript
+Copy code
+import { LightningElement, api, wire } from "lwc";
+import getMetadataDetails from "@salesforce/apex/Metadatatypes.getMetadataDetails";
+
+export default class MetadataDataTable extends LightningElement {
+    @api selectedTypes;
+    metadataDetails = [];
+    columns = [
+        // Define columns for the datatable, e.g., { label: "Field Name", fieldName: "FieldName__c" }
+        // ...
+    ];
+
+    // This method will be called when the component is connected to the DOM
+    connectedCallback() {
+        this.loadMetadataDetails();
+    }
+
+    loadMetadataDetails() {
+        if (!this.selectedTypes || this.selectedTypes.length === 0) {
+            return;
+        }
+
+        getMetadataDetails({ selectedTypes: this.selectedTypes })
+            .then((result) => {
+                if (result) {
+                    this.metadataDetails = result;
+                }
+            })
+            .catch((error) => {
+                console.error("Error loading metadata details:", error);
+                // Handle error if needed
+            });
+    }
+}
+Create the Metadatatypes Apex class with a method to retrieve metadata type names and another method to get metadata details:
+apex
+Copy code
+public class Metadatatypes {
+    // Method to retrieve metadata type names
+    @AuraEnabled(cacheable=true)
+    public static List<String> getMetadataTypeNames() {
+        // Your implementation to fetch metadata type names from the describeMetadata API
+        // ...
+        // Return a list of metadata type names, e.g., List<String> typeNames = new List<String>{'ApexClass', 'ApexTrigger', ...};
+        // return typeNames;
+    }
+
+    // Method to retrieve metadata details based on the selected metadata types
+    @AuraEnabled(cacheable=true)
+    public static List<SObject> getMetadataDetails(List<String> selectedTypes) {
+        // Your implementation to fetch metadata details based on the selected types
+        // ...
+        // Return a list of SObjects with the metadata details
+        // e.g., List<SObject> metadataDetails = [SELECT Id, Name, ... FROM SomeMetadataObject WHERE Type IN :selectedTypes];
+        // return metadataDetails;
+    }
+}
+Please note that the provided code snippets are just a starting point, and you will need to tailor them to your specific use case, especially the datatable in the MetadataDataTable component and the methods in the Metadatatypes Apex class to retrieve the metadata details for the selected types.
+
+With these components and Apex class, you can achieve the flow you described: AuthMetadataApi shows source and target picklists initially, then it displays a lightning-dual-listbox with metadata types upon clicking the "Next" button. After selecting the metadata types, a new component called MetadataDataTable is displayed, showing the metadata details in a datatable. The "Previous" button allows going back to the AuthMetadataApi component to select different source and target orgs or metadata types.
+
+
+
+
+

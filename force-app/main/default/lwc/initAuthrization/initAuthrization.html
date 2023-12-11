@@ -1,0 +1,15 @@
+<template>
+  <template if:true={loaded}>
+    <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+  </template>
+  
+    <div class="bg-img">
+        <div class="container">
+          <h1><b>Initiate OAuth2</b></h1>
+            
+          <label for="Domain">Domain</label>
+          <input type="text" placeholder="Enter Domain" name="Domain" onchange={getDomainValue} required>
+          <button type="submit" class="btn" onclick={redirectToAuthPage}>Initiate</button>
+        </div>
+      </div>
+</template>

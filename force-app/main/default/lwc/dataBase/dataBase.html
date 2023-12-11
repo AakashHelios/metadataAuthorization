@@ -1,0 +1,53 @@
+<template>
+        <lightning-card title="Table">
+          <div class="slds-grid slds-wrap slds-align_absolute-center">
+            <lightning-button-group class="slds-m-right_small">
+              <lightning-button
+                variant="brand-outline"
+                label="All items"
+                title="Primary action with lighter look"
+                onclick={handleAllItems}
+              ></lightning-button>
+              <lightning-button
+                variant="brand-outline"
+                label="New items"
+                title="Primary action with lighter look"
+                onclick={handleNewItems}
+              ></lightning-button>
+              <lightning-button
+                variant="brand-outline"
+                label="Changed item"
+                title="Primary action with lighter look"
+                onclick={handleChangedItems}
+              ></lightning-button>
+              <lightning-button
+                variant="brand-outline"
+                label="Deleted item"
+                title="Primary action with lighter look"
+                onclick={handleDeletedItems}
+              ></lightning-button>
+              <lightning-button
+                variant="brand-outline"
+                label="Selected item"
+                title="Primary action with lighter look"
+                onclick={handleSelectedItems}
+              ></lightning-button>
+            </lightning-button-group>
+            <lightning-input
+              class="slds-m-right_small"
+              type="Search"
+              placeholder="Filter"
+              onchange={handleChange}
+            ></lightning-input>
+          </div>
+          <div style="height: 200px">
+            <lightning-datatable
+              key-field="name"
+              data={availableData}
+              columns={columns}
+              onrowselection={handleCheckboxChange}>
+            </lightning-datatable>
+          </div>
+        </lightning-card>
+</template>
+      

@@ -1,0 +1,12 @@
+<template>
+   <lightning-card title="Metadata Deploy">
+       <template if:true={showMessages}>
+           <lightning-messages></lightning-messages>
+       </template>
+       <template if:false={showMessages}>
+           <lightning-output-panel>
+               <input type="button" onclick={handleOnClick} value="Deploy"/>
+           </lightning-output-panel>
+       </template>
+   </lightning-card>
+</template>

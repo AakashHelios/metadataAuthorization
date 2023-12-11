@@ -1,0 +1,204 @@
+<template>
+  <lightning-card title="Authorization using Metadata API">
+    <!-- 1st component: Source and Target selection -->
+    <template if:true={showSourceTarget}>
+      <div class="slds-grid slds-gutters">
+        <div
+          class="slds-col slds-size_1-of-2 source-column"
+          style="height: fit-content; margin: auto"
+        >
+          <lightning-combobox
+            label="Source Org"
+            value={selectedSource}
+            options={sourceOptions}
+            onchange={handleSourceChange}
+            required="true"
+          ></lightning-combobox>
+        </div>
+        <div class="slds-col slds-size_1-of-2 target-column">
+          <lightning-combobox
+            label="Target Org"
+            value={selectedTarget}
+            options={targetOptions}
+            onchange={handleTargetChange}
+            disabled={isTargetDisabled}
+            required="true"
+          ></lightning-combobox>
+        </div>
+      </div>
+      <lightning-button
+        class="slds-m-top_medium"
+        label="Next"
+        title="Next"
+        onclick={handleNext1}
+      ></lightning-button>
+    </template>
+
+    <!-- 2nd component: Metadata Types selection using Dual Listbox -->
+    <template if:true={showMetadataTypes}>
+      <lightning-dual-listbox
+        label="Select Metadata Types"
+        source-label="Available Types"
+        selected-label="Selected Types"
+        options={metadataTypes}
+        value={selectedMetadataTypes}
+        onchange={handleMetadataTypesChange}
+      ></lightning-dual-listbox>
+      <lightning-button
+        class="slds-m-left_x-small"
+        label="Previous"
+        variant="brand"
+        onclick={handlePrevious}
+      ></lightning-button>
+
+      <lightning-button
+        class="slds-m-left_x-small"
+        label="Next"
+        variant="brand"
+        onclick={handleNextDatatable}
+      ></lightning-button>
+    </template>
+
+    <!-- 3rd component: DataTable for selected Metadata Types -->
+
+    <template if:true={showDataTable}>
+      <lightning-card>
+        <div class="slds-grid slds-wrap slds-align_absolute-center">
+          <lightning-button-group class="slds-m-right_small">
+            <!-- Add the handlers for each button -->
+            <lightning-button
+              class="all-item-button"
+              variant="brand-outline"
+              label="All Items"
+              title="Primary action with lighter look"
+              onclick={handleAllItems}
+            ></lightning-button>
+            <lightning-button
+              class="new-item-button"
+              variant="brand-outline"
+              label="New Items"
+              title="Primary action with lighter look"
+              onclick={handleNewItems}
+            ></lightning-button>
+            <lightning-button
+              class="changed-button"
+              variant="brand-outline"
+              label="Different Items"
+              title="Primary action with lighter look"
+              onclick={handleDifferentItems}
+            ></lightning-button>
+            <lightning-button
+              class="deleted-button"
+              variant="brand-outline"
+              label="Deleted Items"
+              title="Primary action with lighter look"
+              onclick={handleDeletedItems}
+            ></lightning-button>
+            <lightning-button
+              class="selected-items-button"
+              variant="brand-outline"
+              label="Selected item"
+              title="Primary action with lighter look"
+              onclick={handleSelectedItems}
+            ></lightning-button>
+          </lightning-button-group>
+          <lightning-input
+            class="slds-badge__icon"
+            type="Search"
+            placeholder="Filter"
+            onchange={handleSearchChange}
+          ></lightning-input>
+        </div>
+        <div style="height: 200px" class="slds-m-top_medium">
+          <lightning-datatable
+            key-field="fullName"
+            data={filteredMetadataDetails}
+            columns={columns}
+            onrowselection={handleCheckboxSelection}
+            selected-rows={preSelecteditems}
+            onrowaction={handleRowAction}
+          >
+            ></lightning-datatable
+          >
+        </div>
+      </lightning-card>
+      <lightning-button
+        class="slds-m-left_x-small"
+        label="Previous"
+        variant="brand"
+        onclick={handlePreviousDatatable}
+      ></lightning-button>
+      <!-- <lightning-button
+        class="slds-m-left_x-small"
+        label="Next"
+        variant="brand"
+        onclick={handleNextComparison}
+      ></lightning-button> -->
+      <lightning-button
+        class="slds-m-left_x-small"
+        label="Deploy"
+        variant="brand"
+        title="Deploy Apex Class"
+        onclick={handleDeployClick}
+        disabled={isLoading}
+      ></lightning-button>
+      <lightning-button
+        icon-name="utility:download"
+        class="slds-m-left_x-small"
+        label="Download"
+        variant="brand"
+        onclick={handleDownload}
+      ></lightning-button>
+      <lightning-button
+        class="slds-m-left_x-small"
+        label="Compare"
+        variant="brand"
+        onclick={handleCompare}
+      ></lightning-button>
+
+      <!-- Display Deployment Errors component if there are errors -->
+    </template>
+  </lightning-card>
+  <div></div>
+  <template if:true={showTextArea}>
+    <lightning-textarea
+      readonly
+      value={errorData}
+      class="custom-textarea"
+    ></lightning-textarea>
+
+    <lightning-button
+      class="slds-m-left_x-small"
+      label="Hide"
+      variant="brand"
+      onclick={handlehideStatus}
+    ></lightning-button>
+  </template>
+
+  <!-- for comparison tab -->
+  <template if:true={showCompareCard}>
+    <lightning-card>
+      <div class="slds-grid slds-gutters">
+        <div
+          class="slds-col slds-size_1-of-2 source-column"
+          style="height: fit-content; margin: auto"
+        >
+        <lightning-textarea
+            class="custom-comparison1"
+            label="Source Org"
+            value={selectedSourceitems}
+          ></lightning-textarea>
+          <lightning-textarea
+            class="custom-comparison1"
+            label="Target Org"
+            value={selectedTargetitems}
+          ></lightning-textarea>
+        </div>
+      </div>
+    </lightning-card>
+    <lightning-button
+      label="Hide Comparison"
+      onclick={handlehidecomparison}
+    ></lightning-button>
+  </template>
+</template>

@@ -1,0 +1,9 @@
+<template>
+  <lightning-card title="Deployment Errors">
+      <lightning-datatable
+          key-field="fullName"
+          data={deploymentErrors}
+          columns={statusColumns}
+      ></lightning-datatable>
+  </lightning-card>
+</template>

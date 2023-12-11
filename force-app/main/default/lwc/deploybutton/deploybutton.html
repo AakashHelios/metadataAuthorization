@@ -1,0 +1,31 @@
+<template>
+    <lightning-card title="Apex Class Deployment">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2 source-column">
+        <lightning-input
+            class="slds-size_2-of-4"
+          label="Apex Class Name"
+          value={apexClassName}
+          onchange={handleApexClassChange}
+        ></lightning-input>
+        <lightning-button
+          label="Deploy"
+          title="Deploy Apex Class"
+          onclick={handleDeployClick}
+          disabled={isLoading}
+        ></lightning-button>
+        <template if:true={isLoading}>
+          <div class="slds-m-top_medium">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+          </div>
+        </template>
+        <template if:true={deploymentResult}>
+          <!-- <div class="slds-m-top_medium">
+            <p>{deploymentResult}</p>
+          </div> -->
+        </template>
+    </div>
+</div>
+    </lightning-card>
+  </template>
+  

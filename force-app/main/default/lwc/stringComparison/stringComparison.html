@@ -1,0 +1,35 @@
+<template>
+  <lightning-card>
+    <div class="slds-grid slds-gutters">
+      <div class="slds-col slds-size_1-of-2 source-column">
+        <lightning-input
+          class="slds-size_2-of-4"
+          placeholder="Filter"
+          type="search"
+          value={searchTerm1}
+          onchange={handleSourceSearch}
+        ></lightning-input>
+        <template for:each={filteredSourceArray} for:item="sourceItem">
+          <div key={sourceItem.body} class={sourceItem.cssClass}>
+            {sourceItem.body}
+          </div>
+        </template>
+      </div>
+      <div class="slds-col slds-size_1-of-2 target-column">
+        <lightning-input
+          class="slds-size_2-of-4"
+          placeholder="Filter"
+          type="search"
+          value={searchTerm2}
+          onchange={handleTargetSearch}
+        ></lightning-input>
+
+        <template for:each={filteredTargetArray} for:item="targetItem">
+          <div key={targetItem.body} class={targetItem.cssClass}>
+            {targetItem.body}
+          </div>
+        </template>
+      </div>
+    </div>
+  </lightning-card>
+</template>

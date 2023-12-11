@@ -1,0 +1,13 @@
+
+i have just create a api process and deployed it i want to check that the api is working 
+or not
+https://devboomi.imprimisrx.com:9090/ws/simple/createAPI_Create
+i want to check the api that it is working or not using apex
+in boomi request profile i have name and email in it
+so what to write in apex class so that it will call the api
+
+my operation type is create 
+
+i don't know anything im new to boomi
+
+what to do now how it work do i need to create a lwc component ?

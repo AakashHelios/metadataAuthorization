@@ -1,0 +1,49 @@
+
+:host {
+  display: block;
+  margin: auto;
+}
+
+/* .source-array {
+  height: 1em;
+  display: flex; 
+  flex-direction: column;
+  padding: 1em;
+  justify-content: flex-start; 
+}
+
+.target-array {
+  height: 1em;
+  display: flex;
+  flex-direction: column;
+ 
+} */
+.source-column {
+  padding: 1rem;
+}
+
+/* .source-column div {
+   margin-bottom: 0.5rem; 
+ }  */
+
+.target-column {
+  padding: 1rem;
+}
+
+/* .target-column div {
+  margin-bottom: 0.5rem;
+} */
+
+.highlight-green {
+  background-color: rgb(200, 240, 218);
+ 
+}
+
+.highlight-red {
+  background-color: rgb(255, 203, 189);
+}
+
+.blank-line {
+  height: 1em; 
+}
+

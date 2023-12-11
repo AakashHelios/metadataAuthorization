@@ -1,0 +1,40 @@
+
+<apex:component >
+	<apex:attribute name="oncomplete" type="string" description="Javascript executed on unzip of file entry"/>
+	<apex:attribute name="name" type="string" description="Name of the Javascript function generated to unzip files"/>
+	<script>    
+		// Unzip and push zip entries onto list for processing
+	    var zipData = '<apex:componentBody />';
+	    var zip = new JSZip(zipData, {base64:true});
+	    var zipFileNames = [];
+	    for(var zipfileName in zip.files)
+	        zipFileNames.push(zipfileName);	        
+	    // Start sending the files
+	    {!name}();                     
+		// Function to be called from the page to unzip the next file	    
+	    function {!name}()
+	    {                 
+	        debugger;
+	              
+	        var fileName = null;
+	        var file = null;
+	        while(true)
+	        {
+	        	// Pop the next file
+	            file = null;
+	            fileName = zipFileNames.pop();
+	            if(fileName == null)
+	                break;
+	            file = zip.files[fileName];
+	            // Only break for files, skip over folder entries
+	            if(file.data!=null && file.data.length>0)
+	                break;
+	        }
+	        // File to send or done?
+	        var more = file!=null ? true : false;
+	        var path = more ? fileName : null;
+	        var data = more ? file.data : null;
+	        eval('{!oncomplete}');
+	    }           
+	</script>
+</apex:component>

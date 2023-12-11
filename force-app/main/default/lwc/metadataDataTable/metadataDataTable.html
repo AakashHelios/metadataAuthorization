@@ -1,0 +1,52 @@
+
+<template>
+  <lightning-card>
+    <div class="slds-grid slds-wrap slds-align_absolute-center">
+      <lightning-button-group class="slds-m-right_small">
+        <!-- Add the handlers for each button -->
+        <lightning-button
+          class="all-item-button"
+          variant="brand-outline"
+          label="All Items"
+          title="Primary action with lighter look"
+          onclick={handleAllItems}
+        ></lightning-button>
+        <lightning-button
+          class="new-item-button"
+          variant="brand-outline"
+          label="New Items111"
+          title="Primary action with lighter look"
+          onclick={handleNewItems}
+        ></lightning-button>
+        <lightning-button
+          class="changed-button"
+          variant="brand-outline"
+          label="Changed Items"
+          title="Primary action with lighter look"
+          onclick={handleChangedItems}
+        ></lightning-button>
+        <lightning-button
+          class="deleted-button"
+          variant="brand-outline"
+          label="Deleted Items"
+          title="Primary action with lighter look"
+          onclick={handleDeletedItems}
+        ></lightning-button>
+        <lightning-button
+          class="selected-items-button"
+          variant="brand-outline"
+          label="Selected item"
+          title="Primary action with lighter look"
+          onclick={handleSelectedItems}
+        ></lightning-button>
+      </lightning-button-group>
+    </div>
+    <div style="height: 200px" class="slds-m-top_medium">
+      <lightning-datatable
+        key-field="fullName"
+        data={metadataDetails}
+        columns={columns}
+      ></lightning-datatable>
+    </div>
+  </lightning-card>
+</template>

@@ -1,0 +1,11 @@
+<template>
+    <lightning-dual-listbox
+        label="Select Metadata Types"
+        source-label="Available Types"
+        selected-label="Selected Types"
+        options={metadataTypes}
+        value={selectedMetadataTypes}
+        onchange={handlePicklistChange}
+        size="5"
+    ></lightning-dual-listbox>
+</template>

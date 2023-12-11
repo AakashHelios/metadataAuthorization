@@ -1,0 +1,83 @@
+<template>
+  <div style="height: fit-content; margin: auto">
+    <lightning-card title="Comparison Tab">
+      <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-2 source-column">
+          <lightning-combobox
+            label="Source"
+            value={selectedSource}
+            options={sourceOptions}
+            onchange={handleSourceChange}
+            required="true"
+          ></lightning-combobox>
+        </div>
+        <div class="slds-col slds-size_1-of-2 target-column">
+          <lightning-combobox
+            label="Target"
+            value={selectedTarget}
+            options={targetOptions}
+            onchange={handleTargetChange}
+            disabled={isTargetDisabled}
+            required="true"
+          ></lightning-combobox>
+        </div>
+      </div>
+      <lightning-input
+        class="slds-size_2-of-4"
+        label="Apex Class Name"
+        value={apexClassName}
+        onchange={handleApexClassChange}
+      ></lightning-input>
+      <div class="slds-align_absolute-center">
+        <lightning-button
+          class="slds-m-top_medium"
+          label="Compare"
+          title="Compare"
+          onclick={handleCompareClick}
+          disabled={disableCompareButton}
+        ></lightning-button>
+
+        <lightning-button
+          class="slds-m-top_medium"
+          label="Reset"
+          title="Reset"
+          onclick={handleReset}
+        ></lightning-button>
+        <lightning-button
+          class="slds-m-top_medium"
+          label="Deploy"
+          title="Deploy Apex Class"
+          onclick={handleDeployClick}
+          disabled={isLoading}
+        ></lightning-button>
+        <template if:true={isLoading}>
+          <div class="slds-m-top_medium">
+            <lightning-spinner
+              variant="brand"
+              size="medium"
+            ></lightning-spinner>
+          </div>
+        </template>
+      </div>
+      <!-- <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-2 source-column">
+     -->
+
+      <template if:true={isLoading}>
+        <div class="slds-m-top_medium">
+          <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+      </template>
+      <template if:true={deploymentResult}>
+        <!-- <div class="slds-m-top_medium">
+        <p>{deploymentResult}</p>
+      </div> -->
+      </template>
+      <!-- </div>
+  </div> -->
+    </lightning-card>
+  </div>
+  <template if:true={showTable}>
+    <c-data-table table-data={datatable}> </c-data-table>
+  </template>
+</template>

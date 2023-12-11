@@ -1,0 +1,14 @@
+.custom-textarea {
+    width: 100%;
+    font-size: 16px;
+    color: rgb(252, 111, 111);
+    white-space: pre-line;
+    --sds-c-textarea-sizing-min-height:150px;
+}
+
+.custom-comparison1{
+    --sds-c-textarea-sizing-min-height:200px;
+}
+.custom-comparison2{
+    --sds-c-textarea-sizing-min-height:200px;
+}

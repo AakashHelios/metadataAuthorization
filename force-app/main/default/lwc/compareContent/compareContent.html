@@ -1,0 +1,21 @@
+<template>
+  <lightning-card title="Compare Content">
+      <div class="slds-grid slds-wrap">
+          <div class="slds-col">
+              <h3>Content of Row 1</h3>
+              <pre class="slds-p-horizontal_small slds-p-vertical_xx-small slds-scrollable_x code-content">
+                  <code>{content1ToShow}</code>
+              </pre>
+          </div>
+          <div class="slds-col">
+              <h3>Content of Row 2</h3>
+              <pre class="slds-p-horizontal_small slds-p-vertical_xx-small slds-scrollable_x code-content">
+                  <code>{content2ToShow}</code>
+              </pre>
+          </div>
+      </div>
+      <div class="slds-p-horizontal_medium">
+          <lightning-button label="Close" variant="neutral" onclick={handleCloseCompare}></lightning-button>
+      </div>
+  </lightning-card>
+</template>

@@ -1,0 +1,157 @@
+public class MetadataTypesRetriever {
+    private static final Integer METADATA_API_VERSION = Integer.valueOf(new MetadataService.MetadataPort().endpoint_x.substringAfterLast('/'));
+
+    public class MetadataTypeWrapper {
+        @AuraEnabled
+        public String MetaDataType { get; set; }
+        @AuraEnabled
+        public String label { get; set; }
+        @AuraEnabled
+        public String value { get; set; }
+
+        public MetadataTypeWrapper(String label, String value) {
+            this.label = label;
+            this.value = value;
+        }
+    }
+
+    public class MetadataItemWrapper {
+        @AuraEnabled
+        public String fullName { get; set; }
+        @AuraEnabled
+        public String decodedFullName { get; set; }
+        @AuraEnabled
+        public String metaDataType { get; set; }
+
+        public MetadataItemWrapper(String fullName, String decodedFullName, String metaDataType) {
+            this.fullName = fullName;
+            this.decodedFullName = decodedFullName;
+            this.metaDataType = metaDataType;
+        }
+    }
+    
+       @AuraEnabled(cacheable=true)
+    public static Map<String, List<MetadataItemWrapper>> getSelectedMetadataItemsForOrgs(List<String> selectedTypes, String sourceAccessToken, String sourceInstanceUrl, String targetAccessToken, String targetInstanceUrl) {
+        Map<String, List<MetadataItemWrapper>> selectedMetadataItemsMap = new Map<String, List<MetadataItemWrapper>>();
+
+        // Retrieve selected metadata items for the source org
+        List<MetadataItemWrapper> sourceMetadataItems = getSelectedMetadataItems(selectedTypes, sourceAccessToken, sourceInstanceUrl);
+        selectedMetadataItemsMap.put('source', sourceMetadataItems);
+		System.debug('sourceMetadataItems'+sourceMetadataItems);
+        // Retrieve selected metadata items for the target org
+        List<MetadataItemWrapper> targetMetadataItems = getSelectedMetadataItems(selectedTypes, targetAccessToken, targetInstanceUrl);
+        selectedMetadataItemsMap.put('target', targetMetadataItems);
+		System.debug('targetMetadataItems'+targetMetadataItems);
+        return selectedMetadataItemsMap;
+    }
+
+    
+    
+    
+  @AuraEnabled(cacheable=true)
+    public static List<MetadataItemWrapper> getSelectedMetadataItems(List<String> selectedTypes, String sourceAccessToken, String sourceInstanceUrl) {
+
+        List<MetadataItemWrapper> metadataItems = new List<MetadataItemWrapper>();
+
+        if (selectedTypes != null && !selectedTypes.isEmpty()) {
+            MetadataService.MetadataPort service = createService(sourceAccessToken, sourceInstanceUrl);
+            System.debug('selectedTypes, String sourceAccessToken, String sourceInstanceUrl'+ sourceAccessToken+  sourceInstanceUrl);
+            
+
+            for (String metaDataType : selectedTypes) {
+                // List metadata items for the current metadata type
+                List<MetadataService.ListMetadataQuery> queries = new List<MetadataService.ListMetadataQuery>();
+                MetadataService.ListMetadataQuery query = new MetadataService.ListMetadataQuery();
+                query.type_x = metaDataType;
+                queries.add(query);
+				System.debug('metaDataType'+METADATA_API_VERSION);
+                // Call the listMetadata method to retrieve metadata items for the current type
+                MetadataService.FileProperties[] fileProperties = service.listMetadata(queries, METADATA_API_VERSION);
+
+                // Process the retrieved metadata items and add them to the result list
+                if (fileProperties != null) {
+                    for (MetadataService.FileProperties fileProperty : fileProperties) {
+                        metadataItems.add(new MetadataItemWrapper(fileProperty.fullName, EncodingUtil.urlDecode(fileProperty.fullName, 'UTF-8'), metaDataType));
+                    }
+                }else{
+                    System.debug('fileproperties is null');
+                }
+            }
+        }
+   		System.debug('metadataItems: ' + metadataItems);
+
+        return metadataItems;
+    }
+
+      @AuraEnabled(cacheable=true)
+public static List<MetadataTypeWrapper> getMetadataTypes(String sourceOrgId, String targetOrgId) {
+    List<MetadataTypeWrapper> metadataTypes = new List<MetadataTypeWrapper>();
+
+    // Get Authorized__c records for both source and target orgs
+    List<Authorized__c> sourceOrgs = [SELECT access_token__c, instance_url__c FROM Authorized__c WHERE Id = :sourceOrgId];
+    List<Authorized__c> targetOrgs = [SELECT access_token__c, instance_url__c FROM Authorized__c WHERE Id = :targetOrgId];
+
+    if (!sourceOrgs.isEmpty() && !targetOrgs.isEmpty()) {
+        // Since Id is unique, we can assume only one record is returned for each org
+        Authorized__c sourceOrg = sourceOrgs[0];
+        Authorized__c targetOrg = targetOrgs[0];
+
+        // Call the createService method with access tokens and instance URLs
+        MetadataService.MetadataPort sourceService = createService(sourceOrg.access_token__c, sourceOrg.instance_url__c);
+        MetadataService.MetadataPort targetService = createService(targetOrg.access_token__c, targetOrg.instance_url__c);
+
+        // List available Metadata Types via the 'describeMetadata' API call for the source org
+        MetadataService.DescribeMetadataResult sourceDescribeResult = sourceService.describeMetadata(METADATA_API_VERSION);
+        List<String> metadataTypeNames = new List<String>();
+        for (MetadataService.DescribeMetadataObject metadataObject : sourceDescribeResult.metadataObjects) {
+            metadataTypeNames.add(metadataObject.xmlName);
+            // Include child Metadata Types (such as CustomField, ValidationRule, etc.)
+            if (metadataObject.childXmlNames != null) {
+                metadataTypeNames.addAll(metadataObject.childXmlNames);
+            }
+        }
+
+
+          // Sort Metadata Types
+        metadataTypeNames.sort();
+        for (String metadataTypeName : metadataTypeNames) {
+            metadataTypes.add(new MetadataTypeWrapper(metadataTypeName, metadataTypeName));
+        }
+    } else {
+        
+        System.debug('No records found for the provided org Ids');
+        
+    }
+
+    System.debug('metadataTypes'+metadataTypes);
+
+        return metadataTypes;
+    }
+
+  private static MetadataService.MetadataPort createService(String accessToken, String instanceUrl) {
+    // Use the access token and instance URL to create the MetadataService
+    MetadataService.MetadataPort service = new MetadataService.MetadataPort();
+
+    // Check if the instance URL is not null before creating the endpoint_x
+    if (instanceUrl != null) {
+        String endpoint_x = instanceUrl + '/services/Soap/m/' + METADATA_API_VERSION;
+        service.endpoint_x = endpoint_x;
+    }
+
+    service.SessionHeader = new MetadataService.SessionHeader_element();
+    service.SessionHeader.sessionId = accessToken;
+
+    return service;
+}
+
+
+    public class MetadataFile extends MetadataService.MetadataWithContent {
+        public String getFullname() {
+            return fullName;
+        }
+
+        public String getContent() {
+            return content;
+        }
+    }
+}

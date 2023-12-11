@@ -1,0 +1,69 @@
+<template>
+  <lightning-card >
+    <div class="slds-grid slds-wrap slds-align_absolute-center">
+      <lightning-button-group class="slds-m-right_small">
+        <lightning-button
+          class="all-item-button"
+          variant="brand-outline"
+          label="All Items"
+          title="Primary action with lighter look"
+          onclick={handleAllItems}
+        ></lightning-button>
+        <lightning-button
+          class="new-item-button"
+          variant="brand-outline"
+          label="New Items"
+          title="Primary action with lighter look"
+          onclick={handleNewItems}
+        ></lightning-button>
+        <lightning-button
+          class="changed-button"
+          variant="brand-outline"
+          label="Changed Items"
+          title="Primary action with lighter look"
+          onclick={handleChangedItems}
+        ></lightning-button>
+        <lightning-button
+          class="deleted-button"
+          variant="brand-outline"
+          label="Deleted Items"
+          title="Primary action with lighter look"
+          onclick={handleDeletedItems}
+         
+        ></lightning-button>
+        <lightning-button
+        class="selected-items-button"
+          variant="brand-outline"
+          label="Selected item"
+          title="Primary action with lighter look"
+          onclick={handleSelectedItems}
+
+        ></lightning-button>
+      </lightning-button-group>
+        
+      <lightning-input 
+      class="slds-badge__icon"
+      type="Search"
+      placeholder="Filter"
+      onchange={handleChange}
+      ></lightning-input>
+      
+    </div>   
+    <div style="height: 200px" class="slds-m-top_medium">
+      <lightning-datatable
+        
+        data={availableData}
+        columns={columns}
+        key-field="name"
+        onrowselection={handleCheckboxSelection}
+        selected-rows={preSelectedAllergy}
+        onclick={handleRowClick}              
+      >
+    </lightning-datatable>
+  </div>
+</lightning-card>
+  <template if:true={showsString}>
+    <c-string-comparison>
+    </c-string-comparison>
+    </template>
+</template> 

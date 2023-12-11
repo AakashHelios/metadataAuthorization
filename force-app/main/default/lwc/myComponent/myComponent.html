@@ -1,0 +1,14 @@
+<template>
+  <div class="container">
+    <div class="array-container">
+      <template for:each={sourceArray} for:item="item">
+        <div key={item.id} class={item.highlightClass}>{item.value}</div>
+      </template>
+    </div>
+    <div class="array-container">
+      <template for:each={targetArray} for:item="item">
+        <div key={item.id} class={item.highlightClass}>{item.value}</div>
+      </template>
+    </div>
+  </div>
+</template>
