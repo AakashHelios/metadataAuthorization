@@ -3,7 +3,11 @@ public class SampleClass {
     
     public static void deployApexClass(String sessionId, String apexClassName) {
         MetadataService.MetadataPort service = createService(sessionId);
+        
+    
         String base64Zip = retrieveApexClass(service, apexClassName);
+        
+    
         deployZip(service, base64Zip);
     }
     

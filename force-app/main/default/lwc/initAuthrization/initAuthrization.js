@@ -1,4 +1,4 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement} from 'lwc';
 import getURL from '@salesforce/apex/Authrization.getURL';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -6,6 +6,7 @@ export default class InitAuthrization extends LightningElement {
 
     loaded = false;
     domain = '';
+    event1;
 
     /**
      * Event handler for the domain input field.
@@ -20,14 +21,21 @@ export default class InitAuthrization extends LightningElement {
      */
     redirectToAuthPage() {
         if (this.domain !== '') {
+            console.log('domain->>',this.domain);
             this.loaded = true;
             getURL({Domain: this.domain}).then((res) => {
-                this.setTimeoutCallback(() => {
+                console.log('res',res);
+                
+                this.event1 = setTimeout(() => {
                     this.loaded = false;
                     window.open(res, '_blank');
+                    console.log('IN SET TIMEOUT');
                 }, 3000);
+                // this.loaded = false;
+                
             }).catch((err) => {
-                console.error(err);
+                
+                console.error('error',JSON.stringify(err));
             });
         } else {
             const evt = new ShowToastEvent({

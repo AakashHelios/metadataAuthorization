@@ -37,8 +37,8 @@ public with sharing class MetadataDeployController
 				'}' +
 			'}';
 	}
-	@AuraEnabled(cacheable=true)
-	public static void deployZip()
+	// @AuraEnabled(cacheable=true)
+	public  void deployZip()
 	{
 		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Info, 'Deploying...'));
 
@@ -57,8 +57,8 @@ public with sharing class MetadataDeployController
 		AsyncResult = service.deploy(ZipData, DeployOptions);				
 		//return null;
 	}	
-	@AuraEnabled(cacheable=true)
-	public static void checkAsyncRequest()
+	// @AuraEnabled(cacheable=true)
+	public  void checkAsyncRequest()
 	{	
 		// Check the status of the retrieve request
 		MetadataService.MetadataPort service = createService();
@@ -89,11 +89,7 @@ public with sharing class MetadataDeployController
    
     Authorized__c authorizedRecord = [SELECT access_token__c, instance_url__c  FROM Authorized__c LIMIT 1];
     String accessToken = authorizedRecord.access_token__c;
-    String instanceUrl = authorizedRecord.instance_url__c;
-
-    //String endpoint_x = URL.getOrgDomainUrl().toExternalForm() + '/services/Soap/m/42.0';
-    //String endpoint_x = instance_url__c;
-    
+    String instanceUrl = authorizedRecord.instance_url__c;    
     String endpoint_x = instanceUrl + '/services/Soap/m/42.0';
     MetadataService.MetadataPort service = new MetadataService.MetadataPort();
     service.endpoint_x = endpoint_x;
